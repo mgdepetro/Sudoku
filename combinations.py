@@ -1,3 +1,5 @@
+from xml_parsing import Puzzle_XML
+
 def get_combinations(k, collection):
     if k <= 0:
         print("error")
@@ -15,6 +17,10 @@ def get_combinations(k, collection):
         
         yield from get_combinations(k, residual)
 
+""" TESTING
 my_collection = [ 1, 2, 3, 4, 5, 6 ]
-
 print( [i for i in get_combinations(1, my_collection)] )
+"""
+
+puzzle = Puzzle_XML('3x3_02_solvable.xml')
+print(puzzle.start_state)

@@ -6,39 +6,39 @@ class Puzzle_XML:
 
 	def __init__(self, xml_file):
 		# Get element tree object
-		tree = et.parse(self.xml_file)
+		tree = et.parse(xml_file)
 		
 		# Get the root element
 		self.root = tree.getroot()
 		
 		# Fill in puzzle attributes
-		self.name = root.find('name').text
-		self.rows_per_box = get_rows_per_box()
-		self.cols_per_box = get_cols_per_box()
-		self.well_formed = root.find('well_formed').text
-		self.solvable = root.find('solvable').text
-		self.unique_solution = root.find('unique_solution').text
-		self.pigeonhole = root.find('pigeonhole_decidable').text
+		self.name = self.root.find('name').text
+		self.rows_per_box = self.get_rows_per_box()
+		self.cols_per_box = self.get_cols_per_box()
+		self.well_formed = self.root.find('well_formed').text
+		self.solvable = self.root.find('solvable').text
+		self.unique_solution = self.root.find('unique_solution').text
+		self.pigeonhole = self.root.find('pigeonhole_decidable').text
 		
 		# Get the puzzle start state
-		self.start_state = parse_puzzle_state()
+		self.start_state = self.parse_puzzle_state()
 		
-	def get_rows_per_box():
-		rows_per_box = int(root.find('rows_per_box').text)
+	def get_rows_per_box(self):
+		rows_per_box = int(self.root.find('rows_per_box').text)
 		if rows_per_box < 0:
 			return 0
 		else:
 			return rows_per_box
 	
-	def get_cols_per_box():
-		cols_per_box = int(root.find('cols_per_box').text)
+	def get_cols_per_box(self):
+		cols_per_box = int(self.root.find('cols_per_box').text)
 		if cols_per_box < 0:
 			return 0
 		else:
 			return cols_per_box
 			
-	def parse_puzzle_state():
-		puzzle = root.find('start_state').text
+	def parse_puzzle_state(self):
+		puzzle = self.root.find('start_state').text
 		
 		# Get rid of line break symbols and trim whitespace
 		puzzle = puzzle.replace("\\", "")
@@ -50,15 +50,18 @@ class Puzzle_XML:
 		puzzle_dict = eval(stripped_puzzle)
 		
 		# Fills the empty cell values with values based on rows and columns
-		empty_cell_vals = range(1,rows_per_box*cols_per_box + 1)
+		empty_cell_vals = range(1, self.rows_per_box*self.cols_per_box + 1)
+		
+		""" TESTING
 		print("This puzzles values: ")
 		for i in empty_cell_vals:
 			print(i)
+		"""
 		
 		# Fill the empty boxes with full list of optional values
 		full_puzzle_dict = OrderedDict()
-		for i in range(rows_per_box*cols_per_box):
-			for j in range(rows_per_box*cols_per_box):
+		for i in range(self.rows_per_box*self.cols_per_box):
+			for j in range(self.rows_per_box*self.cols_per_box):
 				if (i, j) not in puzzle_dict.keys():
 					full_puzzle_dict[(i, j)] = list(empty_cell_vals)
 				else:
