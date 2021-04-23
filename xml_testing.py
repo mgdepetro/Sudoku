@@ -21,7 +21,11 @@ if __name__ == '__main__':
 	
 	#XML Variables
 	rows_per_box = int(root.find('rows_per_box').text)
+	if rows_per_box < 0:
+		rows_per_box = 0
 	cols_per_box = int(root.find('cols_per_box').text)
+	if cols_per_box < 0:
+		cols_per_box = 0
 	name = root.find('name').text
 	well_formed = root.find('well_formed').text
 	solvable = root.find('solvable').text
