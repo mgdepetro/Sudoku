@@ -71,16 +71,17 @@ if __name__ == '__main__':
 	for i in empty_cell_vals:
 		print(i)
 	
-	#for i in range(9):
-	#	for j in range(9):
-	#		if (i, j) not in puzzle_dict.keys():
-	#			full_puzzle_dict[(i, j)] = empty_cell_vals
-	#		else:
-	#			full_puzzle_dict[(i, j)] = puzzle_dict[(i, j)]
+	
+	for i in range(rows_per_box*cols_per_box):
+		for j in range(rows_per_box*cols_per_box):
+			if (i, j) not in puzzle_dict.keys():
+				full_puzzle_dict[(i, j)] = list(empty_cell_vals)
+			else:
+				full_puzzle_dict[(i, j)] = puzzle_dict[(i, j)]
 				
 				
-	#for key, value in full_puzzle_dict.items():
-	#	print(key, value)
+	for key, value in full_puzzle_dict.items():
+		print(key, value)
 		
 	print()
 	print("puzzle name:" , name)
