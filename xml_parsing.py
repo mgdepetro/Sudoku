@@ -22,6 +22,7 @@ class Puzzle_XML:
 		
 		# Get the puzzle start state
 		self.start_state = self.parse_puzzle_state()
+		self.sub_grids = self.get_sub_grids()
 		
 	def get_rows_per_box(self):
 		rows_per_box = int(self.root.find('rows_per_box').text)
@@ -52,12 +53,6 @@ class Puzzle_XML:
 		# Fills the empty cell values with values based on rows and columns
 		empty_cell_vals = range(1, self.rows_per_box*self.cols_per_box + 1)
 		
-		""" TESTING
-		print("This puzzles values: ")
-		for i in empty_cell_vals:
-			print(i)
-		"""
-		
 		# Fill the empty boxes with full list of optional values
 		full_puzzle_dict = OrderedDict()
 		for i in range(self.rows_per_box*self.cols_per_box):
@@ -68,6 +63,33 @@ class Puzzle_XML:
 					full_puzzle_dict[(i, j)] = puzzle_dict[(i, j)]
 					
 		return full_puzzle_dict
+		
+	def get_sub_grids(self):
+		# Calculate number of sub-grids
+		num_sub_grids = self.rows_per_box * self.cols_per_box
+		
+		start_row, start_col = 0, 0
+		box_row, box_col = 0, 0
+		sub_grids = {}
+		
+		while (start_row < num_sub_grids):
+			for r in range(start_row, self.rows_per_box + start_row):
+				for c in range(start_col, self.cols_per_box + start_col):
+					if (box_row, box_col) in sub_grids.keys():
+						sub_grids[(box_row, box_col)].append( (r, c) )
+					else:
+						sub_grids[(box_row, box_col)] = [ (r, c) ]
+			if start_col + self.cols_per_box >= num_sub_grids:
+				start_col = 0
+				box_col = 0
+				box_row += 1
+				start_row += self.rows_per_box
+			else:
+				start_col += self.cols_per_box
+				box_col += 1
+		
+		return sub_grids
+				
 
 	"""
 	#XML Variables
