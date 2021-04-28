@@ -1,28 +1,26 @@
 import sys
-import getopt
+import argparse
 
 def main(argv):
-	argumentList = sys.argv[1:]
-
-	options = "pstne:"
-
-	long_options = ["Puzzle_Name", "Solve_On_Startup", "Time_Delay", "Solution_Name", "Exit_On_Solve"]
-	print("hi")
-	try:
-		arguments, values = getopt.getopt(argumentList, options, long_options)
-		
-		for currentArgument, currentValue in arguments:
-			if currentArgument in ("-p", "--Puzzle_Name"):
-				print("puzzle name option")
-			elif currentArgument in ("-s", "--Solve_On_Startup"):
-				print("solve on start option")
-			elif currentArgument in ("-t", "--Time_Delay"):
-				print("time delay option")
-			elif currentArgument in ("-n", "--Solution_Name"):
-				print("solution name option")
-			elif currentArgument in ("-e", "--Exit_On_Solve"):
-				print("exit on solve option")
-				
-	except getopt.error as err:
-		print(str(err))
+	parser = argparse.ArgumentParser()
+	parser.add_argument("-P", "--PuzzleName", help="enter puzzle name we are using")
+	parser.add_argument("-S", "--SolveOnStart", help="true or false to sollve on start")
+	parser.add_argument("-T", "--TimeDelay", help="if there is a time delay")
+	parser.add_argument("-N", "--SolutionName", help="name of the solution file")
+	parser.add_argument("-E", "--ExitOnSolve", help="if we exit after solving or not")
 	
+	args = parser.parse_args()
+	
+	if args.PuzzleName:
+		print("puzzle name: %s" % args.PuzzleName)
+	if args.SolveOnStart:
+		print("solve on start up: %s" % args.SolveOnStart)
+	if args.TimeDelay:
+		print("time delay: %s" % args.TimeDelay)
+	if args.SolutionName:
+		print("solution name: %s" % args.SolutionName)
+	if args.ExitOnSolve:
+		print("exit on solve: %s" % args.ExitOnSolve)
+	
+if __name__ == '__main__':
+	sys.exit(main(sys.argv))
