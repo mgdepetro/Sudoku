@@ -1,7 +1,15 @@
 import sys
 import argparse
+from xml_parsing import Puzzle_XML
+from sudoku_grid import Grid
+from sieving import *
 
 def main(argv):
+	testing = True
+	if testing:
+		run_tests()
+		return
+	
 	parser = argparse.ArgumentParser()
 	parser.add_argument("-P", "--PuzzleName", help="enter puzzle name we are using")
 	parser.add_argument("-S", "--SolveOnStart", help="true or false to sollve on start")
@@ -21,6 +29,39 @@ def main(argv):
 		print("solution name: %s" % args.SolutionName)
 	if args.ExitOnSolve:
 		print("exit on solve: %s" % args.ExitOnSolve)
+		
+	puzzle_xml = Puzzle_XML(args.PuzzleName)
+	game_grid = Grid(puzzle_xml)
+	
+def run_tests():
+	puzzle_xml = Puzzle_XML('3x3_02_solvable.xml')
+	game = Grid(puzzle_xml)
+	step = 0
+	
+	for i in range(81):
+		result = game.step()
+		step += 1
+		print(" -- STEP " + str(step) + " -- ")
+		#print(len(result["combo"]))
+		if "success" not in result.keys():
+			print(result)
+		else:
+			print(result["success"])
+		#print(result["cells_sieved"])
+	
+	print(" -- GRID -- ")
+	for r in range(game.grid_size):
+		print()
+		for c in range(game.grid_size):
+			print(str(game.grid[(r, c)]) + " ", end="")
+	
+	print()
+	"""
+	print(" -- SUB GRIDS -- ")
+	for key, value in game.sub_grids.items():
+		print(key, value)
+	"""
+	
 	
 if __name__ == '__main__':
 	sys.exit(main(sys.argv))

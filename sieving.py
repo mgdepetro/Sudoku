@@ -1,4 +1,4 @@
-from xml_parsing import Puzzle_XML
+
 
 def get_combinations(k, collection):
     if k <= 0:
@@ -16,14 +16,23 @@ def get_combinations(k, collection):
             yield (first_item,) + combo
         
         yield from get_combinations(k, residual)
-
-""" TESTING
-my_collection = [ 1, 2, 3, 4, 5, 6 ]
-print( [i for i in get_combinations(1, my_collection)] )
-"""
-	
-def sieve(cell, puzzle):
-	puzzle_dict = puzzle.start_state
+		
+def sieve(cells, cells_to_search, value, puzzle):
+	sieved = []
+	for cell in cells_to_search.keys():
+		if cell in cells:
+			continue
+		if value in puzzle.grid[cell]:
+			puzzle.grid[cell].remove(value)
+			sieved.append(cell)
+					
+	return sieved
+					
+				
+		
+		
+	"""
+	puzzle_dict = game.grid
 	value = puzzle_dict[cell][0]
 	print("value = " + str(value))
 	row = cell[0]
@@ -35,6 +44,7 @@ def sieve(cell, puzzle):
 			continue
 		elif value in puzzle_dict[(row, i)]:
 			puzzle_dict[(row, i)].remove(value)
+			return (row, i)
 			
 	# Sieve from column
 	for i in range(9):
@@ -42,40 +52,18 @@ def sieve(cell, puzzle):
 			continue
 		elif value in puzzle_dict[(i, col)]:
 			puzzle_dict[(i, col)].remove(value)
+			return (i, col)
 			
 	# Sieve from box
 	# Determine which box this cell is in
-	box_row = row // puzzle.rows_per_box
-	box_col = col // puzzle.cols_per_box
+	box_row = row // game.rows_per_box
+	box_col = col // game.cols_per_box
 	
-	cells_in_box = puzzle.sub_grids[(box_row, box_col)]
+	cells_in_box = game.sub_grids[(box_row, box_col)]
 	
 	for item in cells_in_box:
 		if item == cell:
 			continue
 		if value in puzzle_dict[item]:
 			puzzle_dict[item].remove(value)
-
-
-puzzle_xml = Puzzle_XML('3x3_02_solvable.xml')
-puzzle_dict = puzzle_xml.start_state
-#for key, value in puzzle_dict.items():
-	#print(key, value)
-
-row_cells = {}
-for i in range(9):
-	row_cells[(0, i)] = puzzle_dict[(0, i)]
-
-print(row_cells)
-
-combinations = [ i for i in get_combinations(1, list(row_cells.keys())) ]
-
-print(combinations)
-
-for combo in combinations:
-	if len(puzzle_dict[combo[0]]) == 1:
-		print(combo[0])
-		sieve(combo[0], puzzle_xml)
-		
-for key, value in puzzle_dict.items():
-	print(key, value)
+	"""

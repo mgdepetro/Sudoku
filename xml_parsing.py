@@ -22,6 +22,7 @@ class Puzzle_XML:
 		
 		# Get the puzzle start state
 		self.start_state = self.parse_puzzle_state()
+		self.current_state = self.start_state
 		self.sub_grids = self.get_sub_grids()
 		
 	def get_rows_per_box(self):
