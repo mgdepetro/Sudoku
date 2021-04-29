@@ -5,6 +5,7 @@ from sudoku_grid import Grid
 from sieving import *
 
 def main(argv):
+
 	testing = True
 	if testing:
 		run_tests()
