@@ -32,13 +32,6 @@ class Grid:
 					else:
 						values = self.grid[combo[0]]
 						for cell in combo:
-							"""
-							print(cell)
-							print(len(self.grid[cell]))
-							print(k)
-							print(self.grid[cell])
-							print(values)
-							"""
 							if len(self.grid[cell]) != k or self.grid[cell] != values:
 								equal = False
 								break
@@ -49,8 +42,30 @@ class Grid:
 							if sieved:
 								return { "combo": combo, "value": value, \
 										"cells_sieved": sieved, "row": row }
-							
-								
+										
+				# Check if any values are only present in one cell in current row
+				dict_of_vals = {}
+				for key, contents in row_cells.items():
+					if len(contents) == 1:
+						continue
+					for val in contents:
+						if val in dict_of_vals.keys():
+							dict_of_vals[val] += 1
+						else:
+							dict_of_vals[val] = 1
+				
+				to_set = 0
+				for num, count in dict_of_vals.items():
+					if count == 1:
+						to_set = num
+						
+				if to_set != 0:
+					for cell in row_cells.keys():
+						if to_set in self.grid[cell]:
+							self.grid[cell] = [to_set]
+							return { "combo": (cell,), "set": to_set, \
+										"cells_sieved": [cell], "row": row }
+			
 			# Go through each column
 			for col in range(self.grid_size):
 				# Fill current col
@@ -68,13 +83,6 @@ class Grid:
 					else:
 						values = self.grid[combo[0]]
 						for cell in combo:
-							"""
-							print(cell)
-							print(len(self.grid[cell]))
-							print(k)
-							print(self.grid[cell])
-							print(values)
-							"""
 							if len(self.grid[cell]) != k or self.grid[cell] != values:
 								equal = False
 								break
@@ -86,10 +94,30 @@ class Grid:
 								return { "combo": combo, "value": value, \
 										"cells_sieved": sieved, "col": col }
 										
+				# Check if any values are only present in one cell in current col
+				dict_of_vals = {}
+				for key, contents in col_cells.items():
+					if len(contents) == 1:
+						continue
+					for val in contents:
+						if val in dict_of_vals.keys():
+							dict_of_vals[val] += 1
+						else:
+							dict_of_vals[val] = 1
+				
+				to_set = 0
+				for num, count in dict_of_vals.items():
+					if count == 1:
+						to_set = num
+						
+				if to_set != 0:
+					for cell in col_cells.keys():
+						if to_set in self.grid[cell]:
+							self.grid[cell] = [to_set]
+							return { "combo": (cell,), "set": to_set, \
+										"cells_sieved": [cell], "row": col }
+										
 			# Go through each box
-			#box_row = row // self.rows_per_box
-			#box_col = col // self.cols_per_box
-			
 			for box in self.sub_grids.keys():
 				# Fill current box
 				box_cells = {}
@@ -117,45 +145,35 @@ class Grid:
 							if sieved:
 								return { "combo": combo, "value": value, \
 										"cells_sieved": sieved, "box": box }
+										
+				# Check if any values are only present in one cell in current box
+				dict_of_vals = {}
+				for key, contents in box_cells.items():
+					if len(contents) == 1:
+						continue
+					for val in contents:
+						if val in dict_of_vals.keys():
+							dict_of_vals[val] += 1
+						else:
+							dict_of_vals[val] = 1
+				
+				to_set = 0
+				for num, count in dict_of_vals.items():
+					if count == 1:
+						to_set = num
+						
+				if to_set != 0:
+					for cell in box_cells.keys():
+						if to_set in self.grid[cell]:
+							self.grid[cell] = [to_set]
+							return { "combo": (cell,), "set": to_set, \
+										"cells_sieved": [cell], "box": box }
+			
 			k += 1
 			
-		print("k = " + str(k))
 		self.solved = True
 		for value in self.grid.values():
 			if len(value) != 1:
 				self.solved = False
 		
 		return { "success" : self.solved }
-
-
-
-
-
-
-
-
-
-"""
-puzzle_xml = Puzzle_XML('3x3_02_solvable.xml')
-puzzle_dict = puzzle_xml.start_state
-#for key, value in puzzle_dict.items():
-	#print(key, value)
-
-row_cells = {}
-for i in range(9):
-	row_cells[(0, i)] = puzzle_dict[(0, i)]
-
-print(row_cells)
-
-combinations = [ i for i in get_combinations(1, list(row_cells.keys())) ]
-
-print(combinations)
-
-for combo in combinations:
-	if len(puzzle_dict[combo[0]]) == 1:
-		print(combo[0])
-		sieve(combo[0], puzzle_xml)
-		
-for key, value in puzzle_dict.items():
-	print(key, value)
-"""

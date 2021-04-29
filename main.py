@@ -38,15 +38,20 @@ def run_tests():
 	game = Grid(puzzle_xml)
 	step = 0
 	
-	for i in range(81):
+	while (True):
 		result = game.step()
 		step += 1
 		print(" -- STEP " + str(step) + " -- ")
 		#print(len(result["combo"]))
 		if "success" not in result.keys():
 			print(result)
+			for cell in result["cells_sieved"]:
+				if len(game.grid[cell]) < 1:
+					print("I AM BROKENNNNNNNNNNNNNNNNNNNNNNNNN")
+					break
 		else:
 			print(result["success"])
+			break
 		#print(result["cells_sieved"])
 	
 	print(" -- GRID -- ")
