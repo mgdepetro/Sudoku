@@ -3,6 +3,8 @@ import argparse
 from xml_parsing import Puzzle_XML
 from sudoku_grid import Grid
 from sieving import *
+from gui import SudokuGUI
+import tkinter as tk
 
 def main(argv):
 
@@ -35,6 +37,12 @@ def main(argv):
 	game_grid = Grid(puzzle_xml)
 	
 def run_tests():
+	root = tk.Tk()
+	root.geometry("800x125")
+	window = SudokuGUI(root)
+	window.mainloop()
+	
+	"""
 	puzzle_xml = Puzzle_XML('3x3_02_solvable.xml')
 	game = Grid(puzzle_xml)
 	step = 0
@@ -62,10 +70,6 @@ def run_tests():
 			print(str(game.grid[(r, c)]) + " ", end="")
 	
 	print()
-	"""
-	print(" -- SUB GRIDS -- ")
-	for key, value in game.sub_grids.items():
-		print(key, value)
 	"""
 	
 	
