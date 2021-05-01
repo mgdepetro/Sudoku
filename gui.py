@@ -74,6 +74,13 @@ class SudokuGUI(tk.Frame):
 		self.timeDelayComplete.grid(row = 3, column = 1, pady = 2)
 		self.completeEntry.grid(row = 3, column = 2)
 		
+		#scrolling text box to display the steps text
+		self.text = tk.Text(self)
+		self.scroller = tk.Scrollbar(self, orient="vertical", command = self.text.yview)
+		self.text.configure(yscrollcommand=self.scroller.set)
+		
+		self.text.grid(row = 4, column = 1)
+		
 	def savePuzzleName(self):
 		self.puzzlename = self.pnEntry.get()
 		print("the name is: " + self.puzzlename)
