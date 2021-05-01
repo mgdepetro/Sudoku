@@ -8,7 +8,7 @@ import tkinter as tk
 
 def main(argv):
 
-	testing = True
+	testing = False
 	if testing:
 		run_tests()
 		return
@@ -33,8 +33,10 @@ def main(argv):
 	if args.ExitOnSolve:
 		print("exit on solve: %s" % args.ExitOnSolve)
 		
-	puzzle_xml = Puzzle_XML(args.PuzzleName)
-	game_grid = Grid(puzzle_xml)
+	root = tk.Tk()
+	root.geometry("800x125")
+	window = SudokuGUI(root, puzzle_name="3x3_02_solvable.xml")
+	window.mainloop()
 	
 def run_tests():
 	root = tk.Tk()

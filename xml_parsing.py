@@ -41,6 +41,8 @@ class Puzzle_XML:
 			
 	def parse_puzzle_state(self):
 		puzzle = self.root.find('start_state').text
+		if not puzzle:
+			puzzle = "{}"
 		
 		# Get rid of line break symbols and trim whitespace
 		puzzle = puzzle.replace("\\", "")
@@ -90,6 +92,30 @@ class Puzzle_XML:
 				box_col += 1
 		
 		return sub_grids
+		
+	def __repr__(self):
+		rep = "<?xml version=\"1.0\" ?>\n"
+		rep += "<puzzle>\n"
+		rep += "\t<name>" + self.name + "</name>\n"
+		rep += "\t<rows_per_box>" + repr(self.rows_per_box) + "</rows_per_box>\n"
+		rep += "\t<cols_per_box>" + repr(self.cols_per_box) + "</cols_per_box>\n"
+		rep += "\t<start_state>\n"
+		
+		game_dict = {}
+		
+		for cell, value in self.current_state.items():
+			if len(self.current_state[cell]) == 1:
+				game_dict[cell] = self.current_state[cell]
+				
+		rep += str(game_dict) + "\n"
+		rep += "\t</start_state>\n"
+		rep += "\t<well_formed>" + self.well_formed + "</well_formed>\n"
+		rep += "\t<solvable>" + self.solvable + "</solvable>\n"
+		rep += "\t<unique_solution>" + self.unique_solution + "</unique_solution>\n"
+		rep += "\t<pigeonhole_decidable>" + self.pigeonhole + "</pigeonhole_decidable>\n"
+		rep += "</puzzle>"
+		
+		return rep
 				
 
 	"""

@@ -1,5 +1,6 @@
 import tkinter as tk
 import time
+import os
 from xml_parsing import Puzzle_XML
 from sudoku_grid import Grid
 from sieving import *
@@ -12,6 +13,11 @@ class SudokuGUI(tk.Frame):
 		super().__init__(master)
 		self.master = master
 		self.pack()
+		
+		#second row
+		self.messagetext = tk.StringVar()
+		self.message = tk.Label(self, textvariable = self.messagetext, bg="PaleGreen1")
+		self.messagetext.set("Default: No puzzle set")
 		
 		#button 
 		self.puzzlename = tk.Button(self, text="Specify puzzle as file name: ", bg="light slate blue", command= self.savePuzzleName)
@@ -31,11 +37,6 @@ class SudokuGUI(tk.Frame):
 		
 		self.startState.grid(row =0, column = 2, pady = 2)
 		self.startEntry.grid(row = 0, column = 3, pady = 2)
-		
-		#second row
-		self.messagetext = tk.StringVar()
-		self.message = tk.Label(self, textvariable = self.messagetext, bg="PaleGreen1")
-		self.messagetext.set("Default: No puzzle set")
 
 		self.message.grid(row = 1, column = 0, pady = 2)
 		
@@ -76,8 +77,37 @@ class SudokuGUI(tk.Frame):
 	def savePuzzleName(self):
 		self.puzzlename = self.pnEntry.get()
 		print("the name is: " + self.puzzlename)
-		self.parseXML()
-		
+		try:
+			self.parseXML()
+			self.displayPuzzleMessage()
+		except FileNotFoundError:
+			self.messagetext.set("?? can't load puzzle specification: No such file or directory: " + self.puzzlename)
+	
+	def displayPuzzleMessage(self):
+		try:
+			msg = self.puzzlename + " - is "
+			if self.puzzleXML.well_formed == 'True':
+				msg += "well-formed, "
+			else:
+				msg += "ill-formed, "
+			if self.puzzleXML.solvable == 'True':
+				msg += "solvable, "
+			else:
+				msg += "not solvable, "
+			if self.puzzleXML.unique_solution == 'True':
+				msg += "has a unique solution, "
+			else:
+				msg += "has multiple solutions, "
+			if self.puzzleXML.pigeonhole == 'True':
+				msg += "is pigeonhole-decidable."
+			else:
+				msg += "is not pigeonhole-decidable."
+		except:
+			self.messagetext.set("?? can't load puzzle specification: XML not in correct format.")
+			return
+			
+		self.messagetext.set(msg)
+	
 	def parseXML(self):
 		self.puzzleXML = Puzzle_XML(self.puzzlename)
 		self.gameGrid = Grid(self.puzzleXML)
@@ -85,16 +115,32 @@ class SudokuGUI(tk.Frame):
 		
 	def saveStartState(self):
 		self.start = self.startEntry.get()
-		print("the start state is: " + self.start)
+		if not self.start.endswith(".xml"):
+			self.start += ".xml"
+			
+		if os.path.exists(self.start):
+			self.messagetext.set("?? can't save puzzle specification: File already exists.")
+			return
+			
+		with open(self.start, 'w+') as f:
+			f.write(repr(self.puzzleXML))
+			
+		self.messagetext.set("File " + self.start + " created successfully.")
 		
 	def saveStep(self):
-		self.stepCount = int(self.stepCountEntry.get()) # ADD ERROR HANDLING
-		#print("step count: " + str(self.stepCount))
-		delay = self.timeDelayEntry.get()
-		if delay:
-			self.timeDelay = float(delay) # ADD ERROR HANDLING
-		else:
-			self.timeDelay = 0
+		try:
+			self.stepCount = int(self.stepCountEntry.get())
+			delay = self.timeDelayEntry.get()
+			if delay:
+				self.timeDelay = float(delay)
+				if self.timeDelay < 0:
+					raise ValueError
+			else:
+				self.timeDelay = 0
+		except ValueError:
+			self.messagetext.set("Invalid time delay. Enter a positive number.")
+			return
+			
 		
 		#print("time delay: " + str(self.timeDelay))
 		if self.gameGrid.solved == False:
@@ -104,6 +150,7 @@ class SudokuGUI(tk.Frame):
 		for step in range(count):
 			result = self.gameGrid.step()
 			self.logStep(result)
+			self.puzzleXML.current_state = self.gameGrid.grid
 			self.step += 1
 			if self.gameGrid.solved == True:
 				return
@@ -114,7 +161,10 @@ class SudokuGUI(tk.Frame):
 		# This is where the text box will update - add step info
 		
 		if "success" in result.keys():
-			print("done")
+			if result["success"] == True:
+				self.messagetext.set(self.puzzlename + " solved successfully.")
+			else:
+				self.messagetext.set(self.puzzlename + " could not be solved.")
 			return
 		
 		for cell in result["cells_sieved"]:
@@ -145,11 +195,16 @@ class SudokuGUI(tk.Frame):
 		
 	def completePuzzle(self):
 		delay = self.completeEntry.get()
-		if delay:
-			self.timeDelay = float(delay) # ADD ERROR HANDLING
-		else:
-			self.timeDelay = 0
-		#print("Complete steps: " + str(self.timeDelay))
+		try:
+			if delay:
+				self.timeDelay = float(delay)
+				if self.timeDelay < 0:
+					raise ValueError
+			else:
+				self.timeDelay = 0
+		except ValueError:
+			self.messagetext.set("Invalid time delay. Enter a positive number.")
+			return
 		
 		while (not self.gameGrid.solved):
 			result = self.gameGrid.step()
