@@ -1,7 +1,14 @@
 import tkinter as tk
+import time
+from xml_parsing import Puzzle_XML
+from sudoku_grid import Grid
+from sieving import *
+
+
 class SudokuGUI(tk.Frame):
 
-	def __init__(self, master):
+	def __init__(self, master, puzzle_name = None, solve_on_start = None, \
+				time_delay = None):
 		super().__init__(master)
 		self.master = master
 		self.pack()
@@ -11,9 +18,11 @@ class SudokuGUI(tk.Frame):
 		
 		#text entry for puzzle button 
 		self.pnEntry = tk.Entry(self, bd =5)
-		
 		self.puzzlename.grid(row = 0, column = 0, pady = 2)
 		self.pnEntry.grid(row=0, column=1, pady = 2)
+		if puzzle_name:
+			self.pnEntry.insert(tk.END, puzzle_name)
+			self.savePuzzleName()
 		
 		#button
 		self.startState = tk.Button(self, text="Store puzzle state as: ", bg="light slate blue", command= self.saveStartState)
@@ -64,20 +73,86 @@ class SudokuGUI(tk.Frame):
 		self.timeDelayComplete.grid(row = 3, column = 1, pady = 2)
 		self.completeEntry.grid(row = 3, column = 2)
 		
-	def savePuzzleName():
-		self.puzzlename = pnEntry.get()
-		print("the name is: " + puzzlename)
+	def savePuzzleName(self):
+		self.puzzlename = self.pnEntry.get()
+		print("the name is: " + self.puzzlename)
+		self.parseXML()
 		
-	def saveStartState():
-		self.start = startEntry.get()
-		print("the start state is: " + start)
+	def parseXML(self):
+		self.puzzleXML = Puzzle_XML(self.puzzlename)
+		self.gameGrid = Grid(self.puzzleXML)
+		self.step = 1
 		
-	def saveStep():
-		self.stepCount = stepCountEntry.get()
-		print("step count: " + stepCount)
-		self.timeDelay = timeDelayEntry.get()
-		print("time delay: " + timeDelay)
+	def saveStartState(self):
+		self.start = self.startEntry.get()
+		print("the start state is: " + self.start)
 		
-	def completePuzzle():
-		self.completeStep = completeEntry.get()
-		print("Complete steps: " + completeStep)
+	def saveStep(self):
+		self.stepCount = int(self.stepCountEntry.get()) # ADD ERROR HANDLING
+		#print("step count: " + str(self.stepCount))
+		delay = self.timeDelayEntry.get()
+		if delay:
+			self.timeDelay = float(delay) # ADD ERROR HANDLING
+		else:
+			self.timeDelay = 0
+		
+		#print("time delay: " + str(self.timeDelay))
+		if self.gameGrid.solved == False:
+			self.doSteps(self.stepCount)
+			
+	def doSteps(self, count):
+		for step in range(count):
+			result = self.gameGrid.step()
+			self.logStep(result)
+			self.step += 1
+			if self.gameGrid.solved == True:
+				return
+			time.sleep(self.timeDelay)
+			
+			
+	def logStep(self, result):
+		# This is where the text box will update - add step info
+		
+		if "success" in result.keys():
+			print("done")
+			return
+		
+		for cell in result["cells_sieved"]:
+			string = ""
+			string += "step " + str(self.step) + ": "
+			string += "using " + str(result["combo"]) + " "
+			if "set" in result.keys():
+				string += "to set " + str(result["set"]) + " in "
+				if "row" in result.keys():
+					string += "row " + str(result["row"]) + ", "
+				elif "col" in result.keys():
+					string += "col " + str(result["col"]) + ", "
+				else:
+					string += "box " + str(result["box"]) + ", "
+				string += "cell " + str(cell)
+			else:
+				string += "to remove " + str(result["value"]) + " from "
+				if "row" in result.keys():
+					string += "row " + str(result["row"]) + ", "
+				elif "col" in result.keys():
+					string += "col " + str(result["col"]) + ", "
+				else:
+					string += "box " + str(result["box"]) + ", "
+				string += "cell " + str(cell)
+			
+			print(string)
+		
+		
+	def completePuzzle(self):
+		delay = self.completeEntry.get()
+		if delay:
+			self.timeDelay = float(delay) # ADD ERROR HANDLING
+		else:
+			self.timeDelay = 0
+		#print("Complete steps: " + str(self.timeDelay))
+		
+		while (not self.gameGrid.solved):
+			result = self.gameGrid.step()
+			self.logStep(result)
+			self.step += 1
+			time.sleep(self.timeDelay)

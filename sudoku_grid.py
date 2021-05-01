@@ -115,7 +115,7 @@ class Grid:
 						if to_set in self.grid[cell]:
 							self.grid[cell] = [to_set]
 							return { "combo": (cell,), "set": to_set, \
-										"cells_sieved": [cell], "row": col }
+										"cells_sieved": [cell], "col": col }
 										
 			# Go through each box
 			for box in self.sub_grids.keys():
