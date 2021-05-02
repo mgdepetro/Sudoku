@@ -13,10 +13,10 @@ class SudokuGUI(tk.Frame):
 		super().__init__(master)
 		self.master = master
 		self.pack()
-		
+		self.master.geometry("")
 		#second row
 		self.messagetext = tk.StringVar()
-		self.message = tk.Label(self, textvariable = self.messagetext, bg="PaleGreen1", anchor = "center", width = 300)
+		self.message = tk.Label(self, textvariable = self.messagetext, bg="PaleGreen1", anchor = "center", width = 100)
 		self.messagetext.set("Default: No puzzle set")
 		
 		#button 
@@ -51,7 +51,7 @@ class SudokuGUI(tk.Frame):
 		self.stepCountEntry = tk.Entry(self, bd = 5,width= 25)
 
 		self.timeText = tk.StringVar()
-		self.timeDelay = tk.Label(self, textvariable = self.timeText, bg = "light blue",width= 30)
+		self.timeDelay = tk.Label(self, textvariable = self.timeText, bg = "light blue",width= 25)
 		self.timeText.set("Enter inter-step delay(s): ")
 
 		self.timeDelayEntry = tk.Entry(self, bd = 5,width= 25)
@@ -80,7 +80,7 @@ class SudokuGUI(tk.Frame):
 		self.scroller = tk.Scrollbar(self, orient="vertical", command = self.text.yview)
 		self.text.configure(yscrollcommand=self.scroller.set)
 		
-		self.text.grid(row = 13, column = 1)
+		#self.text.grid(row = 13, column = 1)
 		self.scroller = tk.Scrollbar(self, orient="vertical")
 		self.text = tk.Text(self, height = 5,yscrollcommand=self.scroller.set)
 
@@ -102,16 +102,17 @@ class SudokuGUI(tk.Frame):
 		# Fill label dictionary
 		self.cellLabelDict = {}
 		for cell in self.gameGrid.grid.keys():
-			self.cellLabelDict[cell] = tk.Label(self, bg = "white")
+			self.cellLabelDict[cell] = tk.Label(self, bg = "white", width = 25, height = 4, pady = 2, padx = 2)
 			
 	def drawGrid(self):
 		# Draw the grid
-		currentRow = 4
+		currentRow = 5
 		for row in range(self.gameGrid.grid_size):
 			currentCol = 0
 			for col in range(self.gameGrid.grid_size):
-				self.cellLabelDict[(row, col)].grid(row = currentRow, column = currentCol, pady = 2)
+				self.cellLabelDict[(row, col)].grid(row = currentRow, column = currentCol)
 				self.cellLabelDict[(row, col)].config(text = self.gameGrid.grid[(row, col)])
+				
 				currentCol += 1
 			currentRow +=1
 		
