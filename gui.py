@@ -79,7 +79,26 @@ class SudokuGUI(tk.Frame):
 		self.scroller = tk.Scrollbar(self, orient="vertical", command = self.text.yview)
 		self.text.configure(yscrollcommand=self.scroller.set)
 		
-		self.text.grid(row = 4, column = 1)
+		self.text.grid(row = 13, column = 1)
+		
+	def fillGridLabels(self):
+		self.rows = self.gameGrid.grid_size
+		
+		# Fill label dictionary
+		self.cellLabelDict = {}
+		for cell in self.gameGrid.grid.keys():
+			self.cellLabelDict[cell] = tk.Label(self, bg = "white")
+			
+	def drawGrid(self):
+		# Draw the grid
+		currentRow = 4
+		for row in range(self.gameGrid.grid_size):
+			currentCol = 0
+			for col in range(self.gameGrid.grid_size):
+				self.cellLabelDict[(row, col)].grid(row = currentRow, column = currentCol, pady = 2)
+				self.cellLabelDict[(row, col)].config(text = self.gameGrid.grid[(row, col)])
+				currentCol += 1
+			currentRow +=1
 		
 	def savePuzzleName(self):
 		self.puzzlename = self.pnEntry.get()
@@ -89,6 +108,8 @@ class SudokuGUI(tk.Frame):
 			self.displayPuzzleMessage()
 		except FileNotFoundError:
 			self.messagetext.set("?? can't load puzzle specification: No such file or directory: " + self.puzzlename)
+		self.fillGridLabels()
+		self.drawGrid()
 	
 	def displayPuzzleMessage(self):
 		try:
@@ -197,6 +218,7 @@ class SudokuGUI(tk.Frame):
 					string += "box " + str(result["box"]) + ", "
 				string += "cell " + str(cell)
 			
+			self.drawGrid()
 			print(string)
 		
 		
