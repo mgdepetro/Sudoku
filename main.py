@@ -35,7 +35,7 @@ def main(argv):
 		
 	root = tk.Tk()
 	root.geometry("800x125")
-	window = SudokuGUI(root, puzzle_name=args.PuzzleName, solve_on_start= args.SolveOnStart, solution_name= args.SolutionName, exit_on_solve=args.ExitOnSolve)
+	window = SudokuGUI(root, puzzle_name=args.PuzzleName, solve_on_start= args.SolveOnStart, time_delay=args.TimeDelay, solution_name= args.SolutionName, exit_on_solve=args.ExitOnSolve)
 	window.mainloop()
 	
 def run_tests():
@@ -43,36 +43,6 @@ def run_tests():
 	root.geometry("800x125")
 	window = SudokuGUI(root, puzzle_name="3x3_02_solvable.xml")
 	window.mainloop()
-	
-	"""
-	puzzle_xml = Puzzle_XML('3x3_02_solvable.xml')
-	game = Grid(puzzle_xml)
-	step = 0
-	
-	while (True):
-		result = game.step()
-		step += 1
-		print(" -- STEP " + str(step) + " -- ")
-		#print(len(result["combo"]))
-		if "success" not in result.keys():
-			print(result)
-			for cell in result["cells_sieved"]:
-				if len(game.grid[cell]) < 1:
-					print("I AM BROKENNNNNNNNNNNNNNNNNNNNNNNNN")
-					break
-		else:
-			print(result["success"])
-			break
-		#print(result["cells_sieved"])
-	
-	print(" -- GRID -- ")
-	for r in range(game.grid_size):
-		print()
-		for c in range(game.grid_size):
-			print(str(game.grid[(r, c)]) + " ", end="")
-	
-	print()
-	"""
 	
 	
 if __name__ == '__main__':

@@ -14,6 +14,7 @@ class SudokuGUI(tk.Frame):
 		self.master = master
 		self.pack()
 		self.master.geometry("")
+		self.exit_on_solve = exit_on_solve
 		self.master.title("  Brett Hamilton & Micah DePetro - Sudoku Solver  ")
 		#second row
 		self.messagetext = tk.StringVar()
@@ -96,6 +97,10 @@ class SudokuGUI(tk.Frame):
 		self.grid_columnconfigure(1, weight = 1)
 		self.grid_columnconfigure(2, weight = 1)
 		self.grid_columnconfigure(3, weight = 1)
+		
+		if solve_on_start:
+			self.completePuzzle()
+			
 		
 	def fillGridLabels(self):
 		self.rows = self.gameGrid.grid_size
@@ -218,6 +223,10 @@ class SudokuGUI(tk.Frame):
 		self.messagetext.set("File " + self.start + " created successfully.")
 		
 	def saveStep(self):
+		if self.puzzleXML.well_formed == "False":
+			self.messagetext.set("Puzzle is ill-formed, cannot step.")
+			return
+		
 		try:
 			self.stepCount = int(self.stepCountEntry.get())
 			delay = self.timeDelayEntry.get()
@@ -228,7 +237,7 @@ class SudokuGUI(tk.Frame):
 			else:
 				self.timeDelay = 0
 		except ValueError:
-			self.messagetext.set("Invalid time delay. Enter a positive number.")
+			self.messagetext.set("Invalid step count and time delay. Enter positive numbers.")
 			return
 			
 		
@@ -304,3 +313,6 @@ class SudokuGUI(tk.Frame):
 			self.updateGrid()
 			self.updateColors(result)
 			time.sleep(self.timeDelay)
+			
+		if self.exit_on_solve:
+			self.quit()
