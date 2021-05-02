@@ -100,9 +100,18 @@ class SudokuGUI(tk.Frame):
 		self.rows = self.gameGrid.grid_size
 		
 		# Fill label dictionary
+		color = "white"
 		self.cellLabelDict = {}
 		for cell in self.gameGrid.grid.keys():
-			self.cellLabelDict[cell] = tk.Label(self, bg = "white", width = 25, height = 4, pady = 2, padx = 2)
+			for sub, cells in self.gameGrid.sub_grids.items():
+				if cell in cells:
+					if sub[1] % 2 == 1 and sub[0] % 2 == 0:
+						color = "light goldenrod"
+					elif sub[1] % 2 == 0 and sub[0] % 2 == 1:
+						color = "light goldenrod"
+					else:
+						color = "white"
+			self.cellLabelDict[cell] = tk.Label(self, width = 25, bg = color, height = 4, pady = 2, padx = 2)
 			
 	def drawGrid(self):
 		# Draw the grid
@@ -126,6 +135,30 @@ class SudokuGUI(tk.Frame):
 				currentCol += 1
 			currentRow +=1
 		
+	def updateColors(self, result):
+		# Reset colors
+		color = "white"
+		for cell in self.gameGrid.grid.keys():
+			for sub, cells in self.gameGrid.sub_grids.items():
+				if cell in cells:
+					if sub[1] % 2 == 1 and sub[0] % 2 == 0:
+						color = "light goldenrod"
+					elif sub[1] % 2 == 0 and sub[0] % 2 == 1:
+						color = "light goldenrod"
+					else:
+						color = "white"
+			self.cellLabelDict[cell].config(bg = color)
+		
+		# nothing to update
+		if "success" in result.keys():
+			return
+		
+		# Recolor steps cells
+		for combo in result["combo"]:
+			self.cellLabelDict[combo].config(bg = "DodgerBlue2")
+		
+		for cell in result["cells_sieved"]:
+			self.cellLabelDict[cell].config(bg = "dark goldenrod")
 		                                                                                                                            
 	def savePuzzleName(self):
 		self.puzzlename = self.pnEntry.get()
@@ -169,6 +202,7 @@ class SudokuGUI(tk.Frame):
 		self.step = 1
 		
 	def saveStartState(self):
+		self.puzzleXML.current_state = self.gameGrid.grid
 		self.start = self.startEntry.get()
 		if not self.start.endswith(".xml"):
 			self.start += ".xml"
@@ -205,9 +239,9 @@ class SudokuGUI(tk.Frame):
 		for step in range(count):
 			result = self.gameGrid.step()
 			self.logStep(result)
-			self.puzzleXML.current_state = self.gameGrid.grid
 			self.step += 1
 			self.updateGrid()
+			self.updateColors(result)
 			if self.gameGrid.solved == True:
 				return
 			time.sleep(self.timeDelay)
@@ -266,4 +300,6 @@ class SudokuGUI(tk.Frame):
 			result = self.gameGrid.step()
 			self.logStep(result)
 			self.step += 1
+			self.updateGrid()
+			self.updateColors(result)
 			time.sleep(self.timeDelay)
