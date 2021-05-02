@@ -82,7 +82,7 @@ class SudokuGUI(tk.Frame):
 		
 		#self.text.grid(row = 13, column = 1)
 		self.scroller = tk.Scrollbar(self, orient="vertical")
-		self.text = tk.Text(self, height = 5,yscrollcommand=self.scroller.set)
+		self.text = tk.Text(self, height = 5,yscrollcommand=self.scroller.set, bd = 10)
 
 		self.text.grid(row = 4, column = 0, columnspan = 4, sticky = "W")
 		
