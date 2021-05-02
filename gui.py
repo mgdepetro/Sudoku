@@ -9,11 +9,12 @@ from sieving import *
 class SudokuGUI(tk.Frame):
 
 	def __init__(self, master, puzzle_name = None, solve_on_start = None, \
-				time_delay = None):
+				time_delay = None, solution_name = None, exit_on_solve = None):
 		super().__init__(master)
 		self.master = master
 		self.pack()
 		self.master.geometry("")
+		self.master.title("  Brett Hamilton & Micah DePetro - Sudoku Solver  ")
 		#second row
 		self.messagetext = tk.StringVar()
 		self.message = tk.Label(self, textvariable = self.messagetext, bg="PaleGreen1", anchor = "center", width = 100)
@@ -45,7 +46,7 @@ class SudokuGUI(tk.Frame):
 		self.stepSolver = tk.Button(self, text="Step the solver",bg="medium slate blue", command = self.saveStep,width= 25)
 
 		self.stepText = tk.StringVar()
-		self.stepCount = tk.Label(self, textvariable = self.stepText, bg = "light blue",width= 25)
+		self.stepCount = tk.Label(self, textvariable = self.stepText, bg = "light blue",width= 25, height = 1)
 		self.stepText.set("Enter step count: ")
 
 		self.stepCountEntry = tk.Entry(self, bd = 5,width= 25)
@@ -82,7 +83,7 @@ class SudokuGUI(tk.Frame):
 		
 		#self.text.grid(row = 13, column = 1)
 		self.scroller = tk.Scrollbar(self, orient="vertical")
-		self.text = tk.Text(self, height = 5,yscrollcommand=self.scroller.set)
+		self.text = tk.Text(self, height = 5,yscrollcommand=self.scroller.set, bd = 10)
 
 		self.text.grid(row = 4, column = 0, columnspan = 4, sticky = "W")
 		

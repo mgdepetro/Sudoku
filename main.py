@@ -35,7 +35,7 @@ def main(argv):
 		
 	root = tk.Tk()
 	root.geometry("800x125")
-	window = SudokuGUI(root, puzzle_name="3x3_02_solvable.xml")
+	window = SudokuGUI(root, puzzle_name=args.PuzzleName, solve_on_start= args.SolveOnStart, solution_name= args.SolutionName, exit_on_solve=args.ExitOnSolve)
 	window.mainloop()
 	
 def run_tests():
