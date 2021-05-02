@@ -115,6 +115,16 @@ class SudokuGUI(tk.Frame):
 				
 				currentCol += 1
 			currentRow +=1
+			
+	def updateGrid(self):
+		# Update the grid
+		currentRow = 4
+		for row in range(self.gameGrid.grid_size):
+			currentCol = 0
+			for col in range(self.gameGrid.grid_size):
+				self.cellLabelDict[(row, col)].config(text = self.gameGrid.grid[(row, col)])
+				currentCol += 1
+			currentRow +=1
 		
 		                                                                                                                            
 	def savePuzzleName(self):
@@ -197,6 +207,7 @@ class SudokuGUI(tk.Frame):
 			self.logStep(result)
 			self.puzzleXML.current_state = self.gameGrid.grid
 			self.step += 1
+			self.updateGrid()
 			if self.gameGrid.solved == True:
 				return
 			time.sleep(self.timeDelay)
@@ -233,10 +244,9 @@ class SudokuGUI(tk.Frame):
 					string += "col " + str(result["col"]) + ", "
 				else:
 					string += "box " + str(result["box"]) + ", "
-				string += "cell " + str(cell)
+				string += "cell " + str(cell) + "\n"
 			
-			self.drawGrid()
-			print(string)
+			self.text.insert(tk.END, string)
 		
 		
 	def completePuzzle(self):
