@@ -14,6 +14,7 @@ class SudokuGUI(tk.Frame):
 		self.master = master
 		self.pack()
 		self.master.geometry("")
+		self.master.title("  Brett Hamilton & Micah DePetro - Sudoku Solver  ")
 		#second row
 		self.messagetext = tk.StringVar()
 		self.message = tk.Label(self, textvariable = self.messagetext, bg="PaleGreen1", anchor = "center", width = 100)
