@@ -9,7 +9,7 @@ from sieving import *
 class SudokuGUI(tk.Frame):
 
 	def __init__(self, master, puzzle_name = None, solve_on_start = None, \
-				time_delay = None):
+				time_delay = None, solution_name = None, exit_on_solve = None):
 		super().__init__(master)
 		self.master = master
 		self.pack()
