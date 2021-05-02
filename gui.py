@@ -16,63 +16,64 @@ class SudokuGUI(tk.Frame):
 		
 		#second row
 		self.messagetext = tk.StringVar()
-		self.message = tk.Label(self, textvariable = self.messagetext, bg="PaleGreen1")
+		self.message = tk.Label(self, textvariable = self.messagetext, bg="PaleGreen1", anchor = "center", width = 300)
 		self.messagetext.set("Default: No puzzle set")
 		
 		#button 
-		self.puzzlename = tk.Button(self, text="Specify puzzle as file name: ", bg="light slate blue", command= self.savePuzzleName)
+		self.puzzlename = tk.Button(self, text="Specify puzzle as file name: ", bg="light slate blue", command= self.savePuzzleName, width= 25)
 		
 		#text entry for puzzle button 
-		self.pnEntry = tk.Entry(self, bd =5)
-		self.puzzlename.grid(row = 0, column = 0, pady = 2)
-		self.pnEntry.grid(row=0, column=1, pady = 2)
+		self.pnEntry = tk.Entry(self, bd =5,width= 25)
+		self.puzzlename.grid(row = 0, column = 0, pady = 2, sticky = "W")
+		self.pnEntry.grid(row=0, column=1, pady = 2, sticky="W")
 		if puzzle_name:
 			self.pnEntry.insert(tk.END, puzzle_name)
 			self.savePuzzleName()
 		
-		#button
-		self.startState = tk.Button(self, text="Store puzzle state as: ", bg="light slate blue", command= self.saveStartState)
-
-		self.startEntry = tk.Entry(self, bd =5)
 		
-		self.startState.grid(row =0, column = 2, pady = 2)
-		self.startEntry.grid(row = 0, column = 3, pady = 2)
+		#button
+		self.startState = tk.Button(self, text="Store puzzle state as: ", bg="light slate blue", command= self.saveStartState, width= 25)
 
-		self.message.grid(row = 1, column = 0, pady = 2)
+		self.startEntry = tk.Entry(self, bd =5,width= 25)
+		
+		self.startState.grid(row =0, column = 2, pady = 2, sticky = "W")
+		self.startEntry.grid(row = 0, column = 3, pady = 2, sticky = "W")
+
+		self.message.grid(row = 1, column = 0, columnspan= 4, pady = 2)
 		
 		#step solver row 
-		self.stepSolver = tk.Button(self, text="Step the solver",bg="medium slate blue", command = self.saveStep)
+		self.stepSolver = tk.Button(self, text="Step the solver",bg="medium slate blue", command = self.saveStep,width= 25)
 
 		self.stepText = tk.StringVar()
-		self.stepCount = tk.Label(self, textvariable = self.stepText, bg = "light blue")
+		self.stepCount = tk.Label(self, textvariable = self.stepText, bg = "light blue",width= 25)
 		self.stepText.set("Enter step count: ")
 
-		self.stepCountEntry = tk.Entry(self, bd = 5)
+		self.stepCountEntry = tk.Entry(self, bd = 5,width= 25)
 
 		self.timeText = tk.StringVar()
-		self.timeDelay = tk.Label(self, textvariable = self.timeText, bg = "light blue")
+		self.timeDelay = tk.Label(self, textvariable = self.timeText, bg = "light blue",width= 30)
 		self.timeText.set("Enter inter-step delay(s): ")
 
-		self.timeDelayEntry = tk.Entry(self, bd = 5)
+		self.timeDelayEntry = tk.Entry(self, bd = 5,width= 25)
 
-		self.stepSolver.grid(row = 2, column = 0)
-		self.stepCount.grid(row = 2, column = 1)
-		self.stepCountEntry.grid(row = 2, column = 2)
-		self.timeDelay.grid(row = 2, column = 3)
-		self.timeDelayEntry.grid(row = 2, column = 4)
+		self.stepSolver.grid(row = 2, column = 0, sticky = "W")
+		self.stepCount.grid(row = 2, column = 1, sticky = "W")
+		self.stepCountEntry.grid(row = 2, column = 2, sticky = "W")
+		self.timeDelay.grid(row = 2, column = 3, sticky = "W" )
+		self.timeDelayEntry.grid(row = 2, column = 4, sticky = "W")
 		
 		#complete the puzzle row
-		self.puzzleSolver = tk.Button(self, text="Complete the Puzzle",bg="tan1", command = self.completePuzzle)
+		self.puzzleSolver = tk.Button(self, text="Complete the Puzzle",bg="tan1", command = self.completePuzzle,width= 25)
 
 		self.stepCompleteText = tk.StringVar()
-		self.timeDelayComplete = tk.Label(self, textvariable = self.stepCompleteText, bg = "salmon")
+		self.timeDelayComplete = tk.Label(self, textvariable = self.stepCompleteText, bg = "salmon",width= 25)
 		self.stepCompleteText.set("Enter inter-step delay (s): ")
 
-		self.completeEntry = tk.Entry(self, bd = 5)
+		self.completeEntry = tk.Entry(self, bd = 5, width= 25)
 		
-		self.puzzleSolver.grid(row = 3, column = 0, pady = 2)
-		self.timeDelayComplete.grid(row = 3, column = 1, pady = 2)
-		self.completeEntry.grid(row = 3, column = 2)
+		self.puzzleSolver.grid(row = 3, column = 0, pady = 2, sticky = "W")
+		self.timeDelayComplete.grid(row = 3, column = 1, pady = 2, sticky = "W")
+		self.completeEntry.grid(row = 3, column = 2,sticky = "W")
 		
 		#scrolling text box to display the steps text
 		self.text = tk.Text(self)
@@ -80,6 +81,20 @@ class SudokuGUI(tk.Frame):
 		self.text.configure(yscrollcommand=self.scroller.set)
 		
 		self.text.grid(row = 13, column = 1)
+		self.scroller = tk.Scrollbar(self, orient="vertical")
+		self.text = tk.Text(self, height = 5,yscrollcommand=self.scroller.set)
+
+		self.text.grid(row = 4, column = 0, columnspan = 4, sticky = "W")
+		
+		self.grid_rowconfigure(0, weight = 1)
+		self.grid_rowconfigure(1, weight = 2)
+		self.grid_rowconfigure(2, weight = 1)
+		self.grid_rowconfigure(3, weight = 1)
+		
+		self.grid_columnconfigure(0, weight = 1)
+		self.grid_columnconfigure(1, weight = 1)
+		self.grid_columnconfigure(2, weight = 1)
+		self.grid_columnconfigure(3, weight = 1)
 		
 	def fillGridLabels(self):
 		self.rows = self.gameGrid.grid_size
@@ -100,6 +115,7 @@ class SudokuGUI(tk.Frame):
 				currentCol += 1
 			currentRow +=1
 		
+		                                                                                                                            
 	def savePuzzleName(self):
 		self.puzzlename = self.pnEntry.get()
 		print("the name is: " + self.puzzlename)
