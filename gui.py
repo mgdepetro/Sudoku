@@ -45,7 +45,7 @@ class SudokuGUI(tk.Frame):
 		self.stepSolver = tk.Button(self, text="Step the solver",bg="medium slate blue", command = self.saveStep,width= 25)
 
 		self.stepText = tk.StringVar()
-		self.stepCount = tk.Label(self, textvariable = self.stepText, bg = "light blue",width= 25)
+		self.stepCount = tk.Label(self, textvariable = self.stepText, bg = "light blue",width= 25, height = 1)
 		self.stepText.set("Enter step count: ")
 
 		self.stepCountEntry = tk.Entry(self, bd = 5,width= 25)
